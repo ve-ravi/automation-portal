@@ -14,13 +14,14 @@ export const tasks = pgTable("tasks", {
   userId: uuid("user_id")
     .notNull()
     .references(() => users.id),
-  title: text("title"),
-  status: text("status").default("pending"),
-  formData: jsonb("form_data"),
-  result: jsonb("result"),
-  error: text("error"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull()
+  title: text("title").notNull(),
+  type: text("type").notNull(),
+  priority: text("priority").default("medium").notNull(),
+  payload: jsonb("payload"),
+  status: text("status", {
+    enum: ["pending", "queued", "processing", "completed", "failed"]
+  }).default("pending").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull()
 });
 
 export const taskLogs = pgTable("task_logs", {

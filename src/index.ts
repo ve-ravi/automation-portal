@@ -3,7 +3,9 @@ import { sql } from "drizzle-orm";
 import { env } from "./config/env.js";
 import { healthRoutes } from "./routes/health.js";
 import { authRoutes } from "./routes/auth.js";
+import { taskRoutes } from "./routes/tasks.js";
 import { db } from "./config/database.js";
+import { taskQueue } from "./config/queue.js";
 
 const start = async () => {
   const fastify = Fastify({
@@ -21,9 +23,13 @@ const start = async () => {
     process.exit(1);
   }
 
+  // Initialize task queue
+  console.log("📋 Task queue initialized (worker process handles job processing)");
+
   // Register routes
   await fastify.register(healthRoutes);
   await fastify.register(authRoutes);
+  await fastify.register(taskRoutes);
 
   // Start server
   try {

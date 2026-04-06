@@ -8,6 +8,13 @@
       "when": 1775220372113,
       "tag": "0000_classy_genesis",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1775467860417,
+      "tag": "0001_famous_the_order",
+      "breakpoints": true
     }
   ]
 }
