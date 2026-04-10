@@ -35,9 +35,27 @@ export const taskLogs = pgTable("task_logs", {
   createdAt: timestamp("created_at").defaultNow().notNull()
 });
 
+export const formSubmissions = pgTable("form_submissions", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  taskId: uuid("task_id")
+    .notNull()
+    .references(() => tasks.id),
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => users.id),
+  url: text("url").notNull(),
+  formData: jsonb("form_data").notNull(),
+  result: jsonb("result"),
+  status: text("status").default("submitted").notNull(),
+  error: text("error"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull()
+});
+
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({
-  tasks: many(tasks)
+  tasks: many(tasks),
+  formSubmissions: many(formSubmissions)
 }));
 
 export const tasksRelations = relations(tasks, ({ one, many }) => ({
@@ -45,12 +63,24 @@ export const tasksRelations = relations(tasks, ({ one, many }) => ({
     fields: [tasks.userId],
     references: [users.id]
   }),
-  logs: many(taskLogs)
+  logs: many(taskLogs),
+  formSubmission: one(formSubmissions)
 }));
 
 export const taskLogsRelations = relations(taskLogs, ({ one }) => ({
   task: one(tasks, {
     fields: [taskLogs.taskId],
     references: [tasks.id]
+  })
+}));
+
+export const formSubmissionsRelations = relations(formSubmissions, ({ one }) => ({
+  task: one(tasks, {
+    fields: [formSubmissions.taskId],
+    references: [tasks.id]
+  }),
+  user: one(users, {
+    fields: [formSubmissions.userId],
+    references: [users.id]
   })
 }));
